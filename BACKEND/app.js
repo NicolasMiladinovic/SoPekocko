@@ -1,4 +1,5 @@
 const express = require('express');
+const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 
 const userRoutes = require('./routes/user');
@@ -23,6 +24,8 @@ app.use((req, res, next) => {
 // app.use((req, res) => {
 //     res.json({ message: 'Votre requête a bien été reçue !' });
 // });
+
+app.use(bodyParser.json());
 
 app.use('/api/auth', userRoutes);
 
