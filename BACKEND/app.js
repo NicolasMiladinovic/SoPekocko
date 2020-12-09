@@ -1,10 +1,9 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const path = require('path');
 
-const Sauce = require('./models/Sauce');
-
-// const stuffRoutes = require('./routes/sauce');
+const sauceRoutes = require('./routes/sauce');
 const userRoutes = require('./routes/user');
 
 const app = express();
@@ -23,16 +22,25 @@ app.use((req, res, next) => {
     next();
 });
 
+
+app.use(bodyParser.json());
+
+app.use('/images', express.static(path.join(__dirname, 'images')));
+
+app.use('/api/auth', userRoutes);
+app.use('/api/sauces', sauceRoutes);
+
+module.exports = app;
+
+
 // app.use((req, res) => {
 //     res.json({ message: 'Votre requête a bien été reçue !' });
 // });
 
-app.use(bodyParser.json());
 
-app.post('/api/sauces', (req, res, next) => {
-    console.log(req);
-});
-
+// app.post('/api/sauces', (req, res, next) => {
+//     console.log(req.params('sauce'));
+// });
 
 // app.post('/api/sauces', (req, res, next) => {
 //     // delete req.body._id;
@@ -75,7 +83,3 @@ app.post('/api/sauces', (req, res, next) => {
 //     ];
 //     res.status(200).json(sauce);
 // });
-
-app.use('/api/auth', userRoutes);
-
-module.exports = app;
