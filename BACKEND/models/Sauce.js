@@ -4,10 +4,9 @@ const sauceSchema = mongoose.Schema({
     name: { type: String, required: true },
     manufacturer: { type: String, required: true },
     description: { type: String, required: true },
-    mainpepper: { type: String, required: true },
-    image: { type: String, required: true },
+    mainPepper: { type: String, required: true },
+    imageUrl: { type: String, required: true },
     heat: { type: Number, required: true },
-    // Auth auto generate by mongodb
     userId: { type: String, required: true },
 });
 
