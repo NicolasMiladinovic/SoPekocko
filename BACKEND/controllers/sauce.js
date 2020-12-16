@@ -49,3 +49,10 @@ exports.getAllSauces = (req, res, next) => {
         .then(sauce => res.status(200).json(sauce))
         .catch(error => res.status(400).json({ error }));
 };
+
+exports.likeSauce = (req, res, next) => {
+    const likeObject = JSON.parse(req.body.like);
+    const like = Like({
+        ...likeObject
+    });
+};
