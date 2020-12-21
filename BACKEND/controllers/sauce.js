@@ -51,21 +51,56 @@ exports.getAllSauces = (req, res, next) => {
 };
 
 exports.likeSauce = (req, res, next) => {
-    const likeObject = JSON.parse(req.body.like);
-    if (likeObject = 1) {
-        sauceSchema.usersLiked.push(sauceSchema.userId);
-        likeObject.update({}, { $inc: { likes: 1 } });
-    }
-    if (likeObject = -1) {
-        sauceSchema.usersDisliked.push(sauceSchema.userId);
-        likeObject.update({}, { $inc: { likes: -1 } });
-    }
-    if (likeObject = 0) {
-        sauceSchema.usersLiked.includes(sauceSchema.userId);
-        sauceSchema.deleteOne(userId);
-        likeObject.update({}, { $inc: { likes: -1 } });
-        sauceSchema.usersDisliked.includes(sauceSchema.userId);
-        sauceSchema.deleteOne(userId);
-        likeObject.update({}, { $inc: { likes: 1 } });
-    }
+    const likeObject = req.body.like;
+    if (likeObject === 0 && typeof likeObject === 'number') {
+        Sauce.findOne({ _id: req.params.id })
+            .then((sauce) => {
+                let likeValue = 0;
+                let pullType = "";
+                let message = "toto";
+
+                if (sauce.usersLiked.includes(req.body.userId)) {
+                    likeValue = -1;
+                    pullType = "usersLiked";
+                    message = "Like retiré";
+                }
+                else if (sauce.usersDisliked.includes(req.body.userId)) {
+                    likeValue = 1;
+                    pullType = "usersDisliked";
+                    message = "Dislike retiré";
+                }
+                Sauce.updateOne(
+                    {
+                        _id: req.params.id
+                    },
+                    {
+                        $pull: { pullType: req.body.userId },
+                        $inc: { likes: likeValue },
+                    }
+                )
+                    .then(() => res.status(200).json({ message: message }))
+                    .catch((error) => res.status(400).json({ error }))
+            })
+            .catch(error => res.status(400).json({ error }));
+    };
 };
+
+
+
+//     if (likeObject === 1) {
+//         sauceSchema.usersLiked.push(sauceSchema.userId);
+//         likeObject.update({}, { $inc: { likes: 1 } });
+//     }
+//     if (likeObject === -1) {
+//         sauceSchema.usersDisliked.push(sauceSchema.userId);
+//         likeObject.update({}, { $inc: { likes: -1 } });
+//     }
+//     if (likeObject === 0) {
+//         sauceSchema.usersLiked.includes(sauceSchema.userId);
+//         sauceSchema.deleteOne(userId);
+//         likeObject.update({}, { $inc: { likes: -1 } });
+//         sauceSchema.usersDisliked.includes(sauceSchema.userId);
+//         sauceSchema.deleteOne(userId);
+//         likeObject.update({}, { $inc: { likes: 1 } });
+//     }
+// };
