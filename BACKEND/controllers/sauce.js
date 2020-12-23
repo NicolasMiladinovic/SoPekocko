@@ -82,6 +82,42 @@ exports.likeSauce = (req, res, next) => {
                     .catch((error) => res.status(400).json({ error }))
             })
             .catch(error => res.status(400).json({ error }));
+    }
+
+    else if (likeObject === 1 && typeof likeObject === 'number') {
+        Sauce.findOne({ _id: req.params.id })
+            .then((sauce) => {
+                Sauce.updateOne(
+                    {
+                        _id: req.params.id
+                    },
+                    {
+                        $push: { usersLiked: req.body.userId },
+                        $inc: { likes: 1 },
+                    }
+                )
+                    .then(() => res.status(200).json({ message: "Like ajouté" }))
+                    .catch((error) => res.status(400).json({ error }))
+            })
+            .catch(error => res.status(400).json({ error }));
+    }
+
+    else if (likeObject === -1 && typeof likeObject === 'number') {
+        Sauce.findOne({ _id: req.params.id })
+            .then((sauce) => {
+                Sauce.updateOne(
+                    {
+                        _id: req.params.id
+                    },
+                    {
+                        $push: { usersDisliked: req.body.userId },
+                        $inc: { likes: -1 },
+                    }
+                )
+                    .then(() => res.status(200).json({ message: "Dislike ajouté" }))
+                    .catch((error) => res.status(400).json({ error }))
+            })
+            .catch(error => res.status(400).json({ error }));
     };
 };
 
