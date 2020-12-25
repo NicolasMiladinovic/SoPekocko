@@ -6,6 +6,8 @@ exports.createSauce = (req, res, next) => {
     const sauce = new Sauce({
         // ... Copie les champs de la request
         ...sauceObject,
+        likes: 0,
+        dislikes: 0,
         imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
     });
     console.log(sauce);
@@ -52,12 +54,13 @@ exports.getAllSauces = (req, res, next) => {
 
 exports.likeSauce = (req, res, next) => {
     const likeObject = req.body.like;
+    console.log(likeObject);
     if (likeObject === 0 && typeof likeObject === 'number') {
         Sauce.findOne({ _id: req.params.id })
             .then((sauce) => {
                 let likeValue = 0;
                 let pullType = "";
-                let message = "toto";
+                let message = "";
 
                 if (sauce.usersLiked.includes(req.body.userId)) {
                     likeValue = -1;
@@ -120,23 +123,3 @@ exports.likeSauce = (req, res, next) => {
             .catch(error => res.status(400).json({ error }));
     };
 };
-
-
-
-//     if (likeObject === 1) {
-//         sauceSchema.usersLiked.push(sauceSchema.userId);
-//         likeObject.update({}, { $inc: { likes: 1 } });
-//     }
-//     if (likeObject === -1) {
-//         sauceSchema.usersDisliked.push(sauceSchema.userId);
-//         likeObject.update({}, { $inc: { likes: -1 } });
-//     }
-//     if (likeObject === 0) {
-//         sauceSchema.usersLiked.includes(sauceSchema.userId);
-//         sauceSchema.deleteOne(userId);
-//         likeObject.update({}, { $inc: { likes: -1 } });
-//         sauceSchema.usersDisliked.includes(sauceSchema.userId);
-//         sauceSchema.deleteOne(userId);
-//         likeObject.update({}, { $inc: { likes: 1 } });
-//     }
-// };
